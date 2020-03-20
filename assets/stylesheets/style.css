@@ -1,6 +1,8 @@
 body {
-    background-color: rgb(247, 235, 237);
-    background-color: rgb(255,245,221);
+    /* background-color: rgb(247, 235, 237);
+    background-color: rgb(255,245,221); */
+    background-color: rgb(245,245,245);
+    background-color: #fff;
 }
 .container {
     max-width: 1140px;
@@ -21,7 +23,8 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
-.input {
+
+.input, .username {
     display: block;
     /* position: absolute; */
     padding: 1.5rem 2rem;
@@ -29,22 +32,37 @@ input[type=number] {
     margin: 0 auto;
     font-size: 32px;
     outline: 0;
+    text-align: center;
+    border-width: 0px;
+    border-radius: 18px;
+    box-shadow: inset -3px -3px 5px rgba(255, 255, 255, 0.3), 
+                 inset 3px 3px 15px rgba(0, 0, 0, 0.3);
+    background-color: rgb(245,245,245);
     
 }
+
+.username {
+    margin-bottom: 55px;
+}
+
+
 .screen {
     
     display: none;
-    margin-top: 120px;
+    margin-top: 20px;
     width: 100%;
     /* background-color: green; */
     padding: 0.5rem;
     /* width: 30rem; */
     /* margin: 5rem auto; */
-    font-size: 44px;
+    font-size: 30px;
     border:0px solid azure;
     /* box-shadow: 3px 2px 10px #000; */
     outline: 0;
     line-height: 2;
+    color: rgb(125,117,117);
+    /* font-weight: 400; */
+    
     /* letter-spacing: 10px; */
     /* text-align: center; */
 

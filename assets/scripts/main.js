@@ -2,6 +2,7 @@ let input = document.querySelector(".input");
 let p = document.querySelector(".screen");
 
 // let ans = document.querySelector(".ans");
+let username = document.querySelector(".username")
 let str = "";
 let errorMsg = document.createElement('p');
 let ansStr = "";
@@ -31,12 +32,12 @@ function displayScore(right, wrong, min, sec) {
     }
 
     if(min <= 1) {
-        min = `0${min}minitue`;
+        min = `0${min}minute`;
     } else {
         if(min < 10) {
-            min = `0${min}minitues`;
+            min = `0${min}minutes`;
         } else {
-            min = `${min}minitues`
+            min = `${min}minutes`
         }
     }
     
@@ -83,7 +84,7 @@ function createRandomWords(event) {
 
         let randomWord = "";
         input.style.display = "none";
-
+        username.style.display = "none";
 
         for (let i = 1; i <= noOfWords; i++) {
             let wordLen = 3 + Math.floor(Math.random() * (+5 - +1) + +1);
@@ -193,32 +194,36 @@ function markAnswer(str, userStr) {
                 if(str[i]==userStr[i]) {
                     console.log("green", str[i]);
                     minus += 1;
-                    content = `<span style="background-color: green;">${str[i]}</span>`;
+                    content = `<span style="color: rgb(38,100,15);">${str[i]}</span>`;
                     // console.log("minus",minus);
-                    let remaining = str.slice(i+1);
+                    let next = `<span style="background-color: rgb(230,246,211);  border-bottom: 1.5px solid blue; padding-bottom: 1.5px;">${str[i+1]}</span>`;
+                    let remaining = str.slice(i+2);
                     // p.innerHTML = "";
                     // console.log("remaining",remaining);
                     // console.log("content",content);
                     // p.innerHTML = "";
                     
                     // p.innerHTML = "";
-                    p.innerHTML = `${str.slice(0,i)}${content}${remaining}`;
+                    p.innerHTML = `${str.slice(0,i)}${content}${next}${remaining}`;
                     prev = p.innerHTML;
     
                 } else {
                     console.log("red", str[i]);
                     minus += 1;
                     // if(i > 0)
-                    //     content = `<span style="background-color: red;">${str[i-1]}</span>`;
+                    //     content = `<span style="background-color: rgb(230,246,211); color: rgb(251,192,202)">${str[i-1]}</span>`;
                     // else
-                    content = `<span style="background-color: red; ">${str[i]}</span>`;
+                    content = `<span style="color: rgb(214, 48, 48); ">${str[i]}</span>`;
+
+                    let next = `<span style="background-color: rgb(230,246,211);  border-bottom: 1.5px solid blue; padding-bottom: 1.5px;">${str[i+1]}</span>`;
                     
-                    let remaining = str.slice(i+1);
+                    
+                    let remaining = str.slice(i+2);
                     
                 
                     // p.innerHTML = ""
                     // p.innerHTML = "";
-                    p.innerHTML = `${str.slice(0,i)}${content}${remaining}`;
+                    p.innerHTML = `${str.slice(0,i)}${content}${next}${remaining}`;
                     prev = p.innerHTML;
     
                 }
