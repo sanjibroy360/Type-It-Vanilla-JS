@@ -1,13 +1,17 @@
-let input = document.querySelector(".input");
+let input = document.querySelector(".username");
 let p = document.querySelector(".screen");
+let div = document.querySelector('.score_wrapper');
+let historyTable = document.querySelector('.history_tbl');
+let scoreCard = document.querySelector('.score_wrapper');
 
-// let ans = document.querySelector(".ans");
-let username = document.querySelector(".username")
+let users = JSON.parse(localStorage.getItem('history'))||[];
+
 let str = "";
-let errorMsg = document.createElement('p');
 let ansStr = "";
-let startTime = 0;
-let endTime = 0;
+let stop = 0;
+let limit = 60000;
+let startSecond = 0;
+let startMintue = 0;
 let flag;
 let right = 0;
 let wrong = 0;
@@ -17,10 +21,127 @@ let prev = "";
 let disable = [38, 37, 39, 40, 16, 20, 17, 18, 27, 45, 46, 33, 34, 36, 35, 144, 111, 106, 109, 107, 110, 191, 192, 9, 13];
 
 
-function displayScore(right, wrong, min, sec) {
+function clearHistory(event) {
+
+    users = users.filter(el => el.username!== input.value.toLowerCase().trim());
+    localStorage.setItem('history',JSON.stringify(users));
+    
+    let historyTableBody = document.querySelector('.history_tbl tbody');
+    let clearBtn = document.querySelector('.clear_btn');
+    
+    event.target.style.display = 'none';
+
+    historyTableBody.innerHTML= "";
+    
+    history(users);
+}
+
+function history(array = []) {
+    
+    document.querySelector('.score_wrapper').style.display = 'none';
+    historyTable.style.display = 'block';
+
+    let filterUser = array.filter(el => el.username == input.value.toLowerCase().trim());
+    console.log(filterUser);
+    let historyTableBody = document.querySelector('.history_tbl tbody');
+    
+    for(let i = 0; i < filterUser.length; i++) {
+        
+        let tr = document.createElement('tr');
+
+        for(key in filterUser[i]) {
+            console.dir(filterUser[i][key]);
+            var td = document.createElement('td');
+            td.innerText = filterUser[i][key];
+            tr.append(td);
+        }
+        
+        historyTableBody.append(tr);
+    }
+    let clearBtnDiv = document.createElement('div');
+    clearBtnDiv.className = 'clar_btn_div';
+
+    let clearBtn = document.createElement('button');
+    clearBtn.className = "clear_btn history_btn";
+    clearBtn.textContent = "Clear History";
+
+    clearBtnDiv.append(clearBtn)
+    historyTable.after(clearBtnDiv);
+
+    clearBtn.addEventListener('click',clearHistory);
+}
+
+
+function currentTime() {
+    return Date.now(); 
+}
+
+function timeTaken_second() {
+    return Math.floor((currentTime() - startSecond) / 1000);
+}
+
+function wordTyped() {
+    
+    ansStr = ansStr.trim();
+    str = str.trim();
+    let count = 0;
+
+    let ansArr = ansStr.split("");
+    let strArr = str.split("");
+    let strWords = str.split(" ");
+
+    let temp = "";
+    let pos = 0;
+    for(let i = 0; i < ansStr.length; i++) {
+
+        temp += ansArr[i];
+        
+        if(strArr[i+1] == " ") {
+            
+            if(strWords[pos].trim() == temp.trim()) {
+                count += 1 ; 
+                console.log("count",count);               
+            }
+            
+            temp = "";
+            pos++;
+        }
+    }
+    return count;
+}
+
+function timeOver() {
+    if(currentTime() > (startSecond + limit) && startSecond && !stop) {
+        input.style.display = "none";
+        
+        displayScore(right, wrong, timeTaken_second());   
+    }
+    
+}
+
+
+
+
+function displayScore(right = 0, wrong = 0, sec=0) {
+
+    scoreCard.style.display = 'block';
+    
+    let min = sec / 60;
+    let wpm = Math.round(wordTyped() / min) || 0;
+    let score = (right * 10) - 10;
+    
+    console.log("wpm",wpm);
+
     p.innerHTML = "";
     
+    let total = str.trim().split("").length * 10;
+
+    right -= 1; 
     let accuracy = Math.round((right / (right + wrong)) * 100);
+
+
+    sec = (sec % 60);
+
     if(sec <= 1) {
         sec = `0${sec}second`;
     } else {
@@ -31,6 +152,8 @@ function displayScore(right, wrong, min, sec) {
         }
     }
 
+    min = Math.floor(min);
+
     if(min <= 1) {
         min = `0${min}minute`;
     } else {
@@ -40,13 +163,31 @@ function displayScore(right, wrong, min, sec) {
             min = `${min}minutes`
         }
     }
+
+    let currentUser = {
+        username : input.value.toLowerCase().trim(),
+        score : score,
+        total : total,
+        wpm : wpm,
+        accuracy : accuracy,
+        timeTaken : `${min} ${sec}`
+    }
+
+    users.push(currentUser);
+    
+    localStorage.setItem('history',JSON.stringify(users));
     
 
-    let div = document.createElement('div');
-    div.className = "score_wrapper";
-
+    
     pScore = document.createElement('p');
-    pScore.innerHTML = `<span class="label">Score: </span>${right * 10}`;
+    pScore.innerHTML = `<span class="label">Your Score: </span>${score}`; //to ignore first space
+
+    pTotal = document.createElement('p');
+    pTotal.innerHTML = `<span class="label">Total Score: </span>${total}`;
+
+    pWpm = document.createElement('p');
+    pWpm.innerHTML = `<span class="label">Word Per Mintue: </span>${wpm}`;
+
 
     pAcc = document.createElement('p');
     pAcc.innerHTML = `<span class="label">Accuracy: </span>${accuracy}%`;
@@ -54,42 +195,41 @@ function displayScore(right, wrong, min, sec) {
     pTime = document.createElement('p');
     pTime.innerHTML = `<span class="label">Time Taken: </span>${min} ${sec}`;
 
-    div.append(pScore, pAcc, pTime);
+    let history_btn = document.createElement('button');
+    history_btn.className = 'history_btn';
+    history_btn.textContent = "History";
+
+    div.append(pScore,pTotal,pWpm, pAcc, pTime, history_btn);
     p.after(div);
 
+    stop = 1;
+    
+    input.style.display = 'none';
+    p.style.display = 'none';
 
-
+    history_btn.addEventListener('click',() => history(users, event));
 }
 
 function createRandomWords(event) {
 
-    // console.log(event);
     event.preventDefault();
+
     p.innerHTML = "";
     let minLength = 1;
     let msg = [];
-    if((+input.value <= 0 || +input.value !== Math.floor(+input.value) )&& event.keyCode == 13 ) {
+   
+    if (event.keyCode === 13 && input.value.toLowerCase().trim()!= '') {
         
-        errorMsg.className = "error_msg";
-        errorMsg.innerHTML = `Length of the sentence can't be ${input.value}`;
-
-        input.after(errorMsg);
-        input.value = "";
-    }
-    if (event.keyCode === 13 && input.value > 0) {
-        if(errorMsg) {
-            errorMsg.style.visibility = "hidden";
-        }
-        let noOfWords = +input.value;
-
+        let noOfWords = 58;
         let randomWord = "";
         input.style.display = "none";
-        username.style.display = "none";
 
-        for (let i = 1; i <= noOfWords; i++) {
+        for(let i = 1; i <= noOfWords; i++) {
+
             let wordLen = 3 + Math.floor(Math.random() * (+5 - +1) + +1);
 
             for (let j = 0; j <= wordLen; j++) {
+
                 randomWord += String.fromCharCode(Math.floor(Math.random() * (+122 - +97) + +97));
                 p.innerHTML = randomWord;
 
@@ -98,52 +238,57 @@ function createRandomWords(event) {
             
             randomWord = "";
         }
+
         p.innerText = str;
         
         p.style.display = "block";
         
     }
+
     document.addEventListener('keyup', handleAnswer);
-    
+
 }
 
 function handleAnswer(event) {
-    str = str.trim();
     
-    if (!startTime && input.value == str.split(" ").length) {
+    str = str.trim();
+    str = " " + str;
+
+    let date = new Date();
+    
+    if (event.keyCode == 32 && input.value.toLowerCase().trim() && !startSecond && !stop) {
        
-        startTime = Date.now();
+        startMintue = date.getMinutes();
+        startSecond = Date.now();
+
     } 
+
     
    
-    if (((right + wrong + 1) == str.length) && ansStr.length > 0) {
+    if ( ((right + wrong + 1) == str.length  || currentTime() > (startSecond + limit) ) && startSecond && !stop){
 
-        
-        endTime = Date.now();
-
+        // console.log(currentTime() > (startSecond + 1000));
         if(disable.indexOf(event.key) == -1 && (event.keyCode >=65 && event.keyCode<=90)) {
             ansStr += event.key;
             
         } else {
-            console.log("true");
+            // console.log("true");
             ansStr += "-";
         }
         markAnswer(str, ansStr);
-        
-        let timeTaken_minitue = Math.round(((+endTime - +startTime) / 1000) / 60);
-        let timeTaken_second = Math.round((+endTime - +startTime) / 1000);
+      
+        displayScore(right, wrong, timeTaken_second());
 
-        
-        displayScore(right, wrong, timeTaken_minitue, timeTaken_second);
         ansStr = "";
-        startTime = 0;
-        endTime = 0;
+        startSecond = 0;
+        stop = 1;
         str = "";
+        p.style.display = 'none';
         
     } else {
-        if((str[currentIndex]==event.key) && event.keyCode !== 13 && currentIndex+1 <= str.trim().length) {
-            console.log("if");
-            console.log(event.key.toUpperCase());
+        if((str[currentIndex]==event.key) && event.keyCode !== 13 && currentIndex+1 <= str.trim().length && startSecond) {
+            // console.log("if");
+            // console.log(event.key.toUpperCase());
             ansStr += event.key;
             
             right++;
@@ -152,7 +297,7 @@ function handleAnswer(event) {
             markAnswer(str, ansStr);
             
         } 
-        else if(str[currentIndex] !== event.key && event.keyCode !== 13 && currentIndex+1 <= str.trim().length) {
+        else if(str[currentIndex] !== event.key && event.keyCode !== 13 && currentIndex+1 <= str.trim().length && startSecond) {
             
             if(disable.indexOf(event.key) == -1 && (event.keyCode >=65 && event.keyCode<=90)) {
                 ansStr += event.key;
@@ -167,7 +312,7 @@ function handleAnswer(event) {
             markAnswer(str, ansStr);
         
            
-           wrong++;
+            wrong++;
             
             
            
@@ -175,44 +320,38 @@ function handleAnswer(event) {
         
     } 
     
- 
+    // console.log("str",ansStr);
 
 }
 
 function markAnswer(str, userStr) {
+
         event.preventDefault();
         let minus = 0;
         userStr.slice(-1);
         p.innerHTML;
-        // str = str.split("");
+       
         userStr = userStr.split("");
         for(let i = minus; i < userStr.length; i++) {
             
             if(userStr[i]) {
-                // debugger; 
-                console.log("str",str);  
+               
                 if(str[i]==userStr[i]) {
-                    console.log("green", str[i]);
+
                     minus += 1;
                     content = `<span style="color: rgb(38,100,15);">${str[i]}</span>`;
-                    // console.log("minus",minus);
+                   
                     let next = `<span style="background-color: rgb(230,246,211);  border-bottom: 1.5px solid blue; padding-bottom: 1.5px;">${str[i+1]}</span>`;
                     let remaining = str.slice(i+2);
-                    // p.innerHTML = "";
-                    // console.log("remaining",remaining);
-                    // console.log("content",content);
-                    // p.innerHTML = "";
                     
-                    // p.innerHTML = "";
+                    
                     p.innerHTML = `${str.slice(0,i)}${content}${next}${remaining}`;
                     prev = p.innerHTML;
     
                 } else {
-                    console.log("red", str[i]);
+                    
                     minus += 1;
-                    // if(i > 0)
-                    //     content = `<span style="background-color: rgb(230,246,211); color: rgb(251,192,202)">${str[i-1]}</span>`;
-                    // else
+                    
                     content = `<span style="color: rgb(214, 48, 48); ">${str[i]}</span>`;
 
                     let next = `<span style="background-color: rgb(230,246,211);  border-bottom: 1.5px solid blue; padding-bottom: 1.5px;">${str[i+1]}</span>`;
@@ -221,21 +360,19 @@ function markAnswer(str, userStr) {
                     let remaining = str.slice(i+2);
                     
                 
-                    // p.innerHTML = ""
-                    // p.innerHTML = "";
+                   
                     p.innerHTML = `${str.slice(0,i)}${content}${next}${remaining}`;
                     prev = p.innerHTML;
     
                 }
-                // console.log(minus);
                 
-                
-                // p.innerHTML = `${content}${str.slice(i+minus)}`;
-                
-                // content = "";
             } 
         }
        
 }
+
+
+setInterval(currentTime,1000);
+setInterval(timeOver,1000);
 
 input.addEventListener('keyup', createRandomWords);
