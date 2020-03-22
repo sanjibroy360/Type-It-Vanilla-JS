@@ -48,7 +48,6 @@ function history(array = []) {
     historyTable.style.display = 'block';
 
     let filterUser = array.filter(el => el.username == input.value.toLowerCase().trim());
-    console.log(filterUser);
     let historyTableBody = document.querySelector('.history_tbl tbody');
     
     for(let i = 0; i < filterUser.length; i++) {
@@ -56,7 +55,6 @@ function history(array = []) {
         let tr = document.createElement('tr');
 
         for(key in filterUser[i]) {
-            console.dir(filterUser[i][key]);
             var td = document.createElement('td');
             td.innerText = filterUser[i][key];
             tr.append(td);
@@ -150,8 +148,6 @@ function timeOver() {
 }
 
 
-
-
 function displayScore(right = 0, wrong = 0, sec=0) {
 
     scoreCard.style.display = 'block';
@@ -159,8 +155,6 @@ function displayScore(right = 0, wrong = 0, sec=0) {
     let min = sec / 60;
     let wpm = Math.round(wordTyped() / min) || 0;
     let score = (right * 10) - 10;
-    
-    console.log("wpm",wpm);
 
     p.innerHTML = "";
     
@@ -420,4 +414,3 @@ setInterval(currentTime,1000);
 setInterval(timeOver,1000);
 
 input.addEventListener('keyup', createRandomWords);
-// submit.addEventListener('keyup', createRandomWords);

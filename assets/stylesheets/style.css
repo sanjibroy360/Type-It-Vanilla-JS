@@ -202,7 +202,8 @@ td, th {
 }
 
 .current_user {
-    flex-basis: 10%;
+    flex-basis: 20%;
+    text-align: right;
     list-style-type: none;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.8);
@@ -293,6 +294,10 @@ th {
     font-weight: bold;
 }
 
+th:last-child {
+    width: 110px;
+}
+
 
 
 /* Media query */
@@ -305,6 +310,10 @@ th {
 
     .screen {
         width: 98%;
+    }
+
+    .score_wrapper {
+        width: 60%;
     }
 
     
