@@ -142,7 +142,6 @@ function wordTyped() {
 function timeOver() {
     if(currentTime(startSecond, startSecond + limit) > (startSecond + limit) && startSecond && !stop) {
         input.style.display = "none";
-        u
         displayScore(right, wrong, timeTaken_second());   
     }
     
