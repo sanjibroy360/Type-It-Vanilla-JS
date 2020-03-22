@@ -4,16 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Typing Test</title>
+    <title>Type It</title>
     <link rel="stylesheet" href="./assets/stylesheets/style.css">
     <script defer src="./assets/scripts/main.js"></script>
 </head>
 <body>
     <main>
-        <section>
-            <h1 class="heading"><img src="./assets/media/logo.jpg" alt="Logo" width="300px"></h1>
+        <section class="header">
+            <nav class="container">
+                <ul class="nav_links">
+                    <li class="logo"><a href="index.html">TypeIt</a></li><!--
+                    --><li>
+                        <span class="user_icon">👤</span>
+                        <spna class="user"></spna>
+                    </li>
+                </ul>
+            </nav>
+            <!-- <h1 class="heading"><img src="./assets/media/logo.jpg" alt="Logo" width="300px"></h1> -->
+            
             <div class="container">
-                <input type="text" class="username" placeholder="Enter Your Name">
+                <div class="timer_wrapper">
+                    <h3 class="timer"></h3>
+                </div>
+                <div class="banner_wrapper">
+                    <img src="./assets/media/typing.png" alt="Typing-Banner" class="banner">
+                    
+                    <div class="input_sec">
+                        <input type="text" class="username" placeholder="Username">
+                        <ul class="instuction">
+                            <li> Press " Enter " aftre typing username</li>
+                            <li> Press " Space " to start the game countdown.</li>
+                            <li>Game Time Limit is 1 mintue</li>
+                        </ul>
+                    </div>
+                    
+                </div>
                 <!-- <input type="number" class="input" placeholder="Enter String Length"> -->
                 <p class="screen">
                     
@@ -23,7 +48,8 @@
                     
                     <!-- <p class="label">Your Score: 25</p>
                     <p><span class="label">Accuracy: </span>98%</p>
-                    <p><span class="label">Time Taken:</span></p> -->
+                    <p><span class="label">Time Taken:</span></p> -->   
+
                 </div>
 
                 <table class="history_tbl">
@@ -35,6 +61,7 @@
                             <th>Words Per Mintue</th>
                             <th>Accuracy</th>
                             <th>Time Taken</th>
+                            <th>Date</th>
                         </tr>
                     </thead>
     

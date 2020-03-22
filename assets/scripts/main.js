@@ -1,8 +1,12 @@
 let input = document.querySelector(".username");
+let banner = document.querySelector('.banner_wrapper')
 let p = document.querySelector(".screen");
 let div = document.querySelector('.score_wrapper');
 let historyTable = document.querySelector('.history_tbl');
 let scoreCard = document.querySelector('.score_wrapper');
+let submit = document.querySelector('.submit');
+let timer = document.querySelector('.timer');
+
 
 let users = JSON.parse(localStorage.getItem('history'))||[];
 
@@ -39,6 +43,8 @@ function clearHistory(event) {
 function history(array = []) {
     
     document.querySelector('.score_wrapper').style.display = 'none';
+    timer.style.visibility = 'hidden';
+
     historyTable.style.display = 'block';
 
     let filterUser = array.filter(el => el.username == input.value.toLowerCase().trim());
@@ -72,13 +78,36 @@ function history(array = []) {
 }
 
 
-function currentTime() {
+let min = 0;
+let hour = 0;
+function currentTime(starSec = 0,endSec = 0) {
+
+    
+    if(!starSec) {
+        starSec = Date.now();
+    }
+    let sec = Math.floor( (Date.now() - starSec) / 1000);
+    sec = sec < 60 ? sec : Math.floor(sec % 60)
+    min = Math.floor( (Date.now() - starSec) / 1000/ 60);
+    hour = Math.floor( (Date.now() - starSec) / 1000/ 60/60);
+    // let min = Math.floor(sec / 60) || 0;
+    
+    // let hour = Math.floor(min / 60);
+    if((starSec + sec*1000) <= endSec) {
+        timer.innerHTML = "";
+        timer.style.visibility = 'visible';
+        timer.innerHTML = `Timer : ${hour} : ${min} : ${sec}`;
+    }
+    
+    // sec += 1;   
     return Date.now(); 
 }
 
+
 function timeTaken_second() {
-    return Math.floor((currentTime() - startSecond) / 1000);
+    return Math.floor((currentTime(startSecond, startSecond + limit) - startSecond) / 1000);
 }
+
 
 function wordTyped() {
     
@@ -111,9 +140,8 @@ function wordTyped() {
 }
 
 function timeOver() {
-    if(currentTime() > (startSecond + limit) && startSecond && !stop) {
+    if(currentTime(startSecond, startSecond + limit) > (startSecond + limit) && startSecond && !stop) {
         input.style.display = "none";
-        
         displayScore(right, wrong, timeTaken_second());   
     }
     
@@ -124,6 +152,7 @@ function timeOver() {
 
 function displayScore(right = 0, wrong = 0, sec=0) {
 
+    timer.style.visibility = 'hidden';
     scoreCard.style.display = 'block';
     
     let min = sec / 60;
@@ -137,7 +166,7 @@ function displayScore(right = 0, wrong = 0, sec=0) {
     let total = str.trim().split("").length * 10;
 
     right -= 1; 
-    let accuracy = Math.round((right / (right + wrong)) * 100);
+    let accuracy = Math.round((right / (right + wrong)) * 100) || 0;
 
 
     sec = (sec % 60);
@@ -164,13 +193,17 @@ function displayScore(right = 0, wrong = 0, sec=0) {
         }
     }
 
+    let date = new Date();
+    let month = "Jan,Feb,Mar,Apr,May,June,July,Aug,Sept,Oct,Nov,Dec".split(",");
+    
     let currentUser = {
         username : input.value.toLowerCase().trim(),
         score : score,
         total : total,
         wpm : wpm,
-        accuracy : accuracy,
-        timeTaken : `${min} ${sec}`
+        accuracy : `${accuracy}%`,
+        timeTaken : `${min} ${sec}`,
+        date: `${date.getDate()} ${month[date.getMonth()]}, ${date.getFullYear()}`
     }
 
     users.push(currentUser);
@@ -204,11 +237,12 @@ function displayScore(right = 0, wrong = 0, sec=0) {
 
     stop = 1;
     
-    input.style.display = 'none';
+    banner.style.display = 'none';
     p.style.display = 'none';
 
     history_btn.addEventListener('click',() => history(users, event));
 }
+
 
 function createRandomWords(event) {
 
@@ -218,10 +252,16 @@ function createRandomWords(event) {
     let minLength = 1;
     let msg = [];
    
-    if (event.keyCode === 13 && input.value.toLowerCase().trim()!= '') {
+    if (event.keyCode == 13 && input.value.toLowerCase().trim()!= '') {
         
         let noOfWords = 58;
         let randomWord = "";
+
+        let userIcon = document.querySelector('.user_icon');
+        userIcon.style.visibility = 'visible';
+
+        document.querySelector('.user').innerText = input.value.trim();
+
         input.style.display = "none";
 
         for(let i = 1; i <= noOfWords; i++) {
@@ -242,10 +282,13 @@ function createRandomWords(event) {
         p.innerText = str;
         
         p.style.display = "block";
+        banner.style.display = 'none';
         
     }
-
-    document.addEventListener('keyup', handleAnswer);
+    if(banner.style.display == 'none') {
+        document.addEventListener('keyup', handleAnswer);
+    }
+    
 
 }
 
@@ -265,7 +308,7 @@ function handleAnswer(event) {
 
     
    
-    if ( ((right + wrong + 1) == str.length  || currentTime() > (startSecond + limit) ) && startSecond && !stop){
+    if ( ((right + wrong + 1) == str.length  || currentTime(startSecond, startSecond + limit) > (startSecond + limit) ) && startSecond && !stop){
 
         // console.log(currentTime() > (startSecond + 1000));
         if(disable.indexOf(event.key) == -1 && (event.keyCode >=65 && event.keyCode<=90)) {
@@ -376,3 +419,4 @@ setInterval(currentTime,1000);
 setInterval(timeOver,1000);
 
 input.addEventListener('keyup', createRandomWords);
+// submit.addEventListener('keyup', createRandomWords);
