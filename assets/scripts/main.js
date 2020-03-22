@@ -409,8 +409,12 @@ function markAnswer(str, userStr) {
        
 }
 
+document.body.style.zoom = 1.0;
 
 setInterval(currentTime,1000);
 setInterval(timeOver,1000);
 
+
+
 input.addEventListener('keyup', createRandomWords);
+
