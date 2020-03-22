@@ -43,7 +43,7 @@ function clearHistory(event) {
 function history(array = []) {
     
     document.querySelector('.score_wrapper').style.display = 'none';
-    timer.style.visibility = 'hidden';
+    
 
     historyTable.style.display = 'block';
 
@@ -80,24 +80,24 @@ function history(array = []) {
 
 let min = 0;
 let hour = 0;
-function currentTime(starSec = 0,endSec = 0) {
+function currentTime(startSec = 0,endSec = 0) {
 
     
-    if(!starSec) {
-        starSec = Date.now();
+    if(!startSec) {
+        startSec = Date.now();
     }
-    let sec = Math.floor( (Date.now() - starSec) / 1000);
+    let sec = Math.floor( (Date.now() - startSec) / 1000);
     sec = sec < 60 ? sec : Math.floor(sec % 60)
-    min = Math.floor( (Date.now() - starSec) / 1000/ 60);
-    hour = Math.floor( (Date.now() - starSec) / 1000/ 60/60);
+    min = Math.floor( (Date.now() - startSec) / 1000/ 60);
+    hour = Math.floor( (Date.now() - startSec) / 1000/ 60/60);
     // let min = Math.floor(sec / 60) || 0;
     
     // let hour = Math.floor(min / 60);
-    if((starSec + sec*1000) <= endSec) {
-        timer.innerHTML = "";
+    if((startSec + sec*1000) <= endSec) {
+     
         timer.style.visibility = 'visible';
         timer.innerHTML = `Timer : ${hour} : ${min} : ${sec}`;
-    }
+    } 
     
     // sec += 1;   
     return Date.now(); 
@@ -142,7 +142,9 @@ function wordTyped() {
 function timeOver() {
     if(currentTime(startSecond, startSecond + limit) > (startSecond + limit) && startSecond && !stop) {
         input.style.display = "none";
-        displayScore(right, wrong, timeTaken_second());   
+        timer.style.display = 'none';
+        displayScore(right, wrong, timeTaken_second());  
+
     }
     
 }
@@ -152,7 +154,6 @@ function timeOver() {
 
 function displayScore(right = 0, wrong = 0, sec=0) {
 
-    timer.style.visibility = 'hidden';
     scoreCard.style.display = 'block';
     
     let min = sec / 60;

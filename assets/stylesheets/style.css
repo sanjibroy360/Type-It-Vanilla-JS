@@ -51,19 +51,13 @@ table {
 
 /* My CSS */
 body {
-    /* background-color: rgb(247, 235, 237);
-    background-color: rgb(255,245,221); */
-    /* background-color: rgb(245,245,245); */
-    /* background-color: #fff; */
-
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
-    position: relative;
+    /* position: relative; */
 }
 .container {
-    max-width: 1200px;
+    max-width: 1240px;
     margin: 0 auto;
-    position: relative;
- 
+   
 }
 
 a {
@@ -75,11 +69,6 @@ a {
     
 }
 
-input[type=number] {
-    -moz-appearance: textfield;
-}
-
-
 .username {
     margin-bottom: 55px;
 }
@@ -89,7 +78,7 @@ input[type=number] {
     
     display: none;
     margin-top: 20px;
-    width: 100%;
+    width: 98%;
     
     padding: 0.5rem;
    
@@ -118,14 +107,9 @@ input[type=number] {
 
 .score_wrapper {
 
-    position: absolute;
-    left: 50%;
-    transform: translate(15%);
-
     display: none;
-    
-    transform: translate(-50%);
-    margin: 100px 0px 30px 0px;
+    width: 40%;
+    margin: 100px auto;
     font-size: 20px;
     font-family: Helvetica, Arial sans-serif;
     padding: 50px 65px;
@@ -166,11 +150,10 @@ input[type=number] {
     display: none;
     border: none;
     border-spacing: 0px;
-    width: 100%;
+    width: 80%;
     margin: 120px auto;
     margin-bottom: 20px;
-    position: relative;
-    left: 14%;
+    
     box-sizing: border-box;
 }
 
@@ -218,17 +201,8 @@ td, th {
     
 }
 
-.logo {
-    font-size: 28px;
-    letter-spacing: 1px;
-}
-
-.logo a {
-    color: rgba(255, 255, 255, 0.8);
-}
-
-
-.nav_links li {
+.current_user {
+    flex-basis: 10%;
     list-style-type: none;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.8);
@@ -238,7 +212,21 @@ td, th {
     color: grey;
 }
 
+.logo {
+    flex-basis: 20%;
+    font-size: 28px;
+    letter-spacing: 1px;
+}
+
+.logo a {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+
+
+
 .header {
+    width: 100%;
     height: 60px;
     background: linear-gradient(to left top, rgb(44,196,204), rgb(0,145,210), rgb(86,108,225));;
 }
@@ -303,4 +291,21 @@ td, th {
 
 th {
     font-weight: bold;
+}
+
+
+
+/* Media query */
+
+@media all and (max-width : 760px) {
+    .container, .header {
+        width: 760px;
+    }
+
+
+    .screen {
+        width: 98%;
+    }
+
+    
 }
