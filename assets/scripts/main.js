@@ -13,7 +13,7 @@ let users = JSON.parse(localStorage.getItem('history'))||[];
 let str = "";
 let ansStr = "";
 let stop = 0;
-let limit = 0000;
+let limit = 60000;
 let startSecond = 0;
 let startMintue = 0;
 let flag;
