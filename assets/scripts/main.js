@@ -249,7 +249,7 @@ function createRandomWords(event) {
    
     if (event.keyCode == 13 && input.value.toLowerCase().trim()!= '') {
         
-        let noOfWords = 58;
+        let noOfWords = 85;
         let randomWord = "";
 
         let userIcon = document.querySelector('.user_icon');
